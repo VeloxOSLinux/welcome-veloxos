@@ -24,8 +24,9 @@ jobs:
           # Installiere Abhängigkeiten direkt ins AppDir
           pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
           
-          # TRICK: Kopiere das Python-Binary hinein, damit der Builder die Architektur erkennt
-          cp /usr/bin/python3.10 appdir/usr/bin/python3
+          # DYNAMISCHER FIX: Finde den Pfad zum aktuellen Python und kopiere es
+          PYTHON_BIN=$(which python3)
+          cp $PYTHON_BIN appdir/usr/bin/python3
           
           # Icons bereitstellen
           cp assets/logo.webp appdir/logo.webp
@@ -38,7 +39,6 @@ jobs:
 
       - name: Build AppImage
         run: |
-          # Wir setzen die Architektur-Umgebungsvariable explizit
           export ARCH=x86_64
           appimage-builder --recipe ./AppImageBuilder.yml --skip-test
         
