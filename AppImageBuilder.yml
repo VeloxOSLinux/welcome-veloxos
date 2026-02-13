@@ -1,13 +1,18 @@
 version: 1
+
 AppDir:
   path: ./appdir
   app_info:
     id: org.veloxos.welcome
     name: VeloxOS Welcome
-    icon: assets/logo
+    icon: logo # Nur der Name ohne Endung
     version: 1.0.0
     exec: usr/bin/python3
     exec_args: "$APPDIR/main.py"
+  runtime:
+    env:
+      PYTHONPATH: '${APPDIR}/usr/lib/python3.10/site-packages'
+      PATH: '${APPDIR}/usr/bin:${PATH}'
   files:
     include:
       - main.py

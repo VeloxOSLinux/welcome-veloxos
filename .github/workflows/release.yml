@@ -16,10 +16,19 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies into AppDir
+      - name: Prepare AppDir
         run: |
+          mkdir -p appdir/usr/bin
+          mkdir -p appdir/usr/share/icons/hicolor/256x256/apps
           mkdir -p appdir/usr/lib/python3.10/site-packages
+          
+          # Installiere Abhängigkeiten
           pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
+          
+          # Kopiere Icon (wir nehmen das Logo und tun so als wäre es ein png falls es keins ist, 
+          # oder wir nutzen ein Standard-Icon für den Build-Prozess)
+          cp assets/logo.webp appdir/logo.webp
+          cp assets/logo.webp appdir/usr/share/icons/hicolor/256x256/apps/logo.webp
 
       - name: Install appimage-builder
         run: |
@@ -28,7 +37,10 @@ jobs:
           pip3 install appimage-builder
 
       - name: Build AppImage
-        run: appimage-builder --recipe ./AppImageBuilder.yml --skip-test
+        run: |
+          # Wir erzwingen die Architektur-Variable für den Builder
+          export ARCH=x86_64
+          appimage-builder --recipe ./AppImageBuilder.yml --skip-test
         
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
