@@ -16,8 +16,8 @@ python3 -m PyInstaller --noconfirm --onefile --windowed \
             main.py
 
 # Icon für linuxdeploy konvertieren (linuxdeploy braucht PNG oder SVG)
-echo "Konvertiere Icon für AppImage..."
-convert assets/logo.webp assets/logo.png
+echo "Konvertiere und skaliere Icon für AppImage (512x512)..."
+convert assets/logo.webp -resize 512x512 assets/logo.png
 
 if [ ! -f linuxdeploy-x86_64.AppImage ]; then
     echo "Lade linuxdeploy herunter..."
