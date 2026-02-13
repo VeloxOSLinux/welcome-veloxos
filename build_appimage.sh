@@ -12,6 +12,7 @@ python3 -m PyInstaller --noconfirm --onefile --windowed \
             --add-data "functions:functions" \
             --add-data "gui:gui" \
             --add-data "style:style" \
+            --add-data "scripts:scripts" \
             --name "VeloxOS-Welcome" \
             main.py
 

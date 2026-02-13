@@ -2,8 +2,11 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                              QPushButton, QLabel, QCheckBox, QComboBox, QFrame)
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QPainter, QRadialGradient, QColor, QBrush, QPixmap
-# WICHTIG: Hier get_resource_path hinzufügen
-from functions.functions import run_command, open_app, open_link, install_nvidia, get_resource_path
+import os
+
+# Importiere die neuen Hardware-Funktionen
+from functions.functions import (run_command, open_app, open_link, 
+                                 check_nvidia_status, install_nvidia, get_resource_path)
 from functions.translations import TRANSLATIONS
 from functions.system_info import get_sys_info
 from functions.config_manager import load_config, save_config
@@ -29,12 +32,17 @@ class WelcomeWindow(QMainWindow):
 
         self.init_ui()
 
+    def is_live_system(self):
+        """ Prüft, ob wir uns im Miso Live-System befinden """
+        return os.path.exists("/run/miso/bootmnt")
+
     def init_ui(self):
         if hasattr(self, 'sidebar'): self.sidebar.deleteLater()
         if hasattr(self, 'content_area'): self.content_area.deleteLater()
 
         lang = TRANSLATIONS[self.current_lang]
         sys_data = get_sys_info()
+        nvidia_state = check_nvidia_status() # 0: Keine, 1: Braucht Treiber, 2: OK
 
         # --- SIDEBAR (Links) ---
         self.sidebar = QFrame()
@@ -44,8 +52,8 @@ class WelcomeWindow(QMainWindow):
         sidebar_layout.setContentsMargins(25, 40, 25, 30)
 
         logo_label = QLabel()
-        # ÄNDERUNG: Pfad für Logo angepasst
-        pixmap = QPixmap(get_resource_path("assets/logo.webp"))
+        # Wichtig: Nutze das PNG für linuxdeploy Kompatibilität
+        pixmap = QPixmap(get_resource_path("assets/VeloxOS-Welcome.png"))
         if not pixmap.isNull():
             logo_label.setPixmap(pixmap.scaledToHeight(100, Qt.TransformationMode.SmoothTransformation))
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -119,25 +127,42 @@ class WelcomeWindow(QMainWindow):
         columns_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         columns_layout.setSpacing(20)
         
-        # Spalte 1: Dokumentation
+        # Spalte 1: Dokumentation & Community
         columns_layout.addLayout(self.create_column(lang["col_doc"], [
             (lang["btn_web"], lambda: open_link("https://veloxos.org")),
             (lang["btn_wiki"], lambda: open_link("https://wiki.veloxos.org")),
             ("GitHub", lambda: open_link("https://github.com/VeloxOS")),
         ], is_external=True))
 
-        # Spalte 2: Einstellungen
+        # Spalte 2: Einstellungen & Verwaltung
         columns_layout.addLayout(self.create_column(lang["col_set"], [
-            (lang["btn_update"], lambda: run_command("pkexec pacman -Syu")),
+            (lang["btn_update"], lambda: open_app("pamac-manager --updates")),
             (lang["btn_firewall"], lambda: open_app("gufw")),
-            (lang["btn_kernel"], lambda: open_app("manjaro-settings-manager -m msm_kernel")),
+            ("CachyOS Settings", lambda: open_app("cachyos-settings-manager")),
         ]))
 
-        # Spalte 3: Installation
-        columns_layout.addLayout(self.create_column(lang["col_inst"], [
-            (lang["btn_nvidia"], install_nvidia),
-            (lang["btn_apps"], lambda: open_app("pamac-manager")),
-        ]))
+        # Spalte 3: Installation & Optimierung
+        # Hier bauen wir die Logik für NVIDIA und den Installer ein
+        install_buttons = []
+        
+        # NVIDIA Logik
+        if nvidia_state == 1:
+            # Karte gefunden, aber Treiber fehlen (GELBER BUTTON wie in Yad)
+            btn_text = "➊ Install NVIDIA Drivers" if self.current_lang == "en" else "➊ NVIDIA Treiber installieren"
+            install_buttons.append((btn_text, install_nvidia, "#ffcc00"))
+        elif nvidia_state == 2:
+            btn_text = "NVIDIA Drivers Active" if self.current_lang == "en" else "NVIDIA Treiber aktiv"
+            install_buttons.append((btn_text, None, "#2ecc71"))
+        
+        # Installer nur im Live-System anzeigen
+        if self.is_live_system():
+            btn_text = "➋ Install VeloxOS" if self.current_lang == "en" else "➋ VeloxOS Installieren"
+            install_buttons.append((btn_text, lambda: run_command("sudo -E calamares"), "#00ff00"))
+        
+        # Standard Apps (Pamac) immer anzeigen
+        install_buttons.append((lang["btn_apps"], lambda: open_app("pamac-manager"), None))
+
+        columns_layout.addLayout(self.create_column(lang["col_inst"], install_buttons))
 
         self.content_layout.addLayout(columns_layout)
         self.content_layout.addStretch()
@@ -153,7 +178,6 @@ class WelcomeWindow(QMainWindow):
         for icon, link in socials:
             s_btn = QPushButton()
             s_btn.setObjectName("socialButton")
-            # ÄNDERUNG: Pfad für Social Icons angepasst
             s_btn.setIcon(QIcon(get_resource_path(f"assets/{icon}")))
             s_btn.setIconSize(QSize(22, 22))
             s_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -180,15 +204,27 @@ class WelcomeWindow(QMainWindow):
         lbl.setObjectName("columnHeader")
         lbl.setMinimumHeight(20) 
         col_wrapper.addWidget(lbl)
-        for text, func in buttons:
+        
+        for item in buttons:
+            text, func = item[0], item[1]
+            custom_color = item[2] if len(item) > 2 else None
+            
             btn = QPushButton(text)
             btn.setObjectName("actionButton")
+            
+            if custom_color:
+                btn.setStyleSheet(f"background-color: {custom_color}; color: black; font-weight: bold;")
+            
+            if func:
+                btn.clicked.connect(func)
+            else:
+                btn.setEnabled(False)
+
             if is_external:
-                # ÄNDERUNG: Pfad für External-Link Icon angepasst
                 btn.setIcon(QIcon(get_resource_path("assets/external-link.svg")))
                 btn.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
                 btn.setIconSize(QSize(14, 14))
-            btn.clicked.connect(func)
+                
             col_wrapper.addWidget(btn)
         return col_wrapper
 

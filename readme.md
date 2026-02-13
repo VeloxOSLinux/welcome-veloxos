@@ -2,7 +2,9 @@
 
 Welcome to the official **VeloxOS Welcome** application. This tool is designed to provide a seamless post-installation experience for VeloxOS users, helping them to configure their system, install essential drivers, and join the community.
 
-![VeloxOS Banner](https://raw.githubusercontent.com/VeloxOS/assets/main/logo.webp) ## ✨ Features
+![VeloxOS Banner](https://raw.githubusercontent.com/VeloxOS/assets/logo.webp) 
+
+## ✨ Features
 
 * **System Information**: Real-time display of your Hardware (CPU, GPU, RAM) and Kernel version.
 * **One-Click Updates**: Easily trigger system updates via Pacman.
