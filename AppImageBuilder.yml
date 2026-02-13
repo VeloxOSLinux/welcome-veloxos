@@ -5,13 +5,15 @@ AppDir:
   app_info:
     id: org.veloxos.welcome
     name: VeloxOS Welcome
-    icon: logo # Nur der Name ohne Endung
+    icon: logo
     version: 1.0.0
     exec: usr/bin/python3
     exec_args: "$APPDIR/main.py"
+  # Wir nutzen 'classic' statt den fehleranfälligen neuen Algorithmus
   runtime:
+    generator: classic
     env:
-      PYTHONPATH: '${APPDIR}/usr/lib/python3.10/site-packages'
+      PYTHONPATH: '${APPDIR}/usr/lib/python3.10/site-packages:${PYTHONPATH}'
       PATH: '${APPDIR}/usr/bin:${PATH}'
   files:
     include:

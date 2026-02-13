@@ -12,23 +12,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Prepare AppDir
         run: |
           mkdir -p appdir/usr/bin
-          mkdir -p appdir/usr/share/icons/hicolor/256x256/apps
           mkdir -p appdir/usr/lib/python3.10/site-packages
           
-          # Installiere Abhängigkeiten
+          # Installiere Abhängigkeiten direkt ins AppDir
           pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
           
-          # Kopiere Icon (wir nehmen das Logo und tun so als wäre es ein png falls es keins ist, 
-          # oder wir nutzen ein Standard-Icon für den Build-Prozess)
+          # TRICK: Kopiere das Python-Binary hinein, damit der Builder die Architektur erkennt
+          cp /usr/bin/python3.10 appdir/usr/bin/python3
+          
+          # Icons bereitstellen
           cp assets/logo.webp appdir/logo.webp
-          cp assets/logo.webp appdir/usr/share/icons/hicolor/256x256/apps/logo.webp
 
       - name: Install appimage-builder
         run: |
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build AppImage
         run: |
-          # Wir erzwingen die Architektur-Variable für den Builder
+          # Wir setzen die Architektur-Umgebungsvariable explizit
           export ARCH=x86_64
           appimage-builder --recipe ./AppImageBuilder.yml --skip-test
         
