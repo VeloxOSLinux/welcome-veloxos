@@ -3,19 +3,28 @@ name: Build AppImage
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies into AppDir
+        run: |
+          mkdir -p appdir/usr/lib/python3.10/site-packages
+          pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
 
       - name: Install appimage-builder
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip
+          sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot libglib2.0-bin
           pip3 install appimage-builder
 
       - name: Build AppImage

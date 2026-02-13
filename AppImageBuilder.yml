@@ -1,7 +1,4 @@
 version: 1
-script:
-  - apt-get update && apt-get install -y python3-pip python3-setuptools
-  - pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
 AppDir:
   path: ./appdir
   app_info:
@@ -11,13 +8,6 @@ AppDir:
     version: 1.0.0
     exec: usr/bin/python3
     exec_args: "$APPDIR/main.py"
-  apt:
-    arch: amd64
-    sources:
-      - sourceline: deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse
-    include:
-      - python3
-      - python3-pkg-resources
   files:
     include:
       - main.py
@@ -25,6 +15,7 @@ AppDir:
       - functions/*
       - style/*
       - assets/*
+      - appdir/usr/lib/python3.10/site-packages/*
 
 AppImage:
   update-information: None
