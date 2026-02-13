@@ -1,0 +1,106 @@
+/* Hauptfenster & Basics */
+QMainWindow {
+    background-color: #0b0e14;
+}
+
+QWidget#centralWidget {
+    background: transparent;
+}
+
+/* Sidebar Styling */
+QFrame#sidebar {
+    background-color: rgba(15, 20, 28, 0.7);
+    border-right: 1px solid #1e242c;
+}
+
+QLabel#sidebarDesc {
+    color: #8f939a;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* System Info Box */
+QFrame#sysInfoBox {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 170, 255, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+QLabel#sysInfoText {
+    color: #a0a6ae;
+    font-size: 11px;
+    margin: 2px 0;
+}
+
+QLabel#sysInfoText b {
+    color: #00aaff;
+    font-weight: bold;
+}
+
+/* Hero Bereich */
+QLabel#heroTitle {
+    font-size: 38px;
+    font-weight: 300;
+    color: #ffffff;
+}
+
+QLabel#heroDesc {
+    font-size: 14px;
+    color: #8f939a;
+    line-height: 1.5;
+    margin-top: 5px;
+}
+
+/* Buttons */
+QPushButton#actionButton {
+    background-color: rgba(22, 27, 34, 0.8);
+    color: #ffffff;
+    border: 1px solid #30363d;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: left;
+}
+
+QPushButton#actionButton:hover {
+    background-color: #1f242c;
+    border: 1px solid #00aaff;
+    color: #00aaff;
+}
+
+/* Spalten Header */
+QLabel#columnHeader {
+    color: #00aaff;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+/* Social Buttons */
+QPushButton#socialButton {
+    background: transparent;
+    border: none;
+    padding: 8px;
+}
+
+QPushButton#socialButton:hover {
+    background: rgba(0, 170, 255, 0.1);
+    border-radius: 20px;
+}
+
+/* Form-Elemente */
+QComboBox {
+    background-color: #161b22;
+    color: white;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+QCheckBox {
+    color: #8f939a;
+    font-size: 12px;
+}

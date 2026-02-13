@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE Settings
+.vscode/
+.idea/
+
+# System-spezifische Dateien (Windows/Linux)
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# VeloxOS User Config
+.veloxos_welcome.json
+
+# Logs
+*.log
+
+# Distribution / Build
+build/
+dist/
+*.spec
