@@ -15,10 +15,6 @@ python3 -m PyInstaller --noconfirm --onefile --windowed \
             --name "VeloxOS-Welcome" \
             main.py
 
-# Icon für linuxdeploy konvertieren (linuxdeploy braucht PNG oder SVG)
-echo "Konvertiere und skaliere Icon für AppImage (512x512)..."
-convert assets/logo.webp -resize 512x512 assets/logo.png
-
 if [ ! -f linuxdeploy-x86_64.AppImage ]; then
     echo "Lade linuxdeploy herunter..."
     wget -c https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
@@ -29,10 +25,8 @@ export OUTPUT="VeloxOS-Welcome-x86_64.AppImage"
 export APPIMAGE_EXTRACT_AND_RUN=1
 
 ./linuxdeploy-x86_64.AppImage --executable dist/VeloxOS-Welcome \
-    --icon-file assets/logo.png \
+    --icon-file assets/VeloxOS-Welcome.png \
+    --icon-filename VeloxOS-Welcome \
     --appdir AppDir \
     --create-desktop-file \
     --output appimage
-
-# Aufräumen
-rm assets/logo.png
