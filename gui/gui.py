@@ -137,8 +137,8 @@ class WelcomeWindow(QMainWindow):
         # Spalte 2: Einstellungen & Verwaltung
         columns_layout.addLayout(self.create_column(lang["col_set"], [
             (lang["btn_update"], lambda: open_app("pamac-manager --updates")),
-            (lang["btn_firewall"], lambda: open_app("gufw")),
-            ("CachyOS Settings", lambda: open_app("cachyos-settings-manager")),
+            ("COSMIC Settings", lambda: open_app("cosmic-settings")),
+            ("Kernel Manager", lambda: open_app("cachyos-kernel-manager")),
         ]))
 
         # Spalte 3: Installation & Optimierung
