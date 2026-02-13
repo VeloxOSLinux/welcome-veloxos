@@ -16,34 +16,18 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Prepare AppDir
-        run: |
-          mkdir -p appdir/usr/bin
-          mkdir -p appdir/usr/lib/python3.10/site-packages
-          
-          # Installiere Abhängigkeiten direkt ins AppDir
-          pip3 install --target ./appdir/usr/lib/python3.10/site-packages -r requirements.txt
-          
-          # DYNAMISCHER FIX: Finde den Pfad zum aktuellen Python und kopiere es
-          PYTHON_BIN=$(which python3)
-          cp $PYTHON_BIN appdir/usr/bin/python3
-          
-          # Icons bereitstellen
-          cp assets/logo.webp appdir/logo.webp
-
-      - name: Install appimage-builder
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot libglib2.0-bin
-          pip3 install appimage-builder
+          sudo apt-get install -y libfuse2 binutils # libfuse2 wird für AppImages benötigt
 
       - name: Build AppImage
         run: |
-          export ARCH=x86_64
-          appimage-builder --recipe ./AppImageBuilder.yml --skip-test
-        
+          chmod +x build_appimage.sh
+          ./build_appimage.sh
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: VeloxOS-Welcome-AppImage
-          path: ./*.AppImage
+          path: VeloxOS-Welcome-x86_64.AppImage
