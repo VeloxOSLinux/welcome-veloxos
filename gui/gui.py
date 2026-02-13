@@ -2,7 +2,8 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                              QPushButton, QLabel, QCheckBox, QComboBox, QFrame)
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QPainter, QRadialGradient, QColor, QBrush, QPixmap
-from functions.functions import run_command, open_app, open_link, install_nvidia
+# WICHTIG: Hier get_resource_path hinzufügen
+from functions.functions import run_command, open_app, open_link, install_nvidia, get_resource_path
 from functions.translations import TRANSLATIONS
 from functions.system_info import get_sys_info
 from functions.config_manager import load_config, save_config
@@ -43,7 +44,8 @@ class WelcomeWindow(QMainWindow):
         sidebar_layout.setContentsMargins(25, 40, 25, 30)
 
         logo_label = QLabel()
-        pixmap = QPixmap("assets/logo.webp")
+        # ÄNDERUNG: Pfad für Logo angepasst
+        pixmap = QPixmap(get_resource_path("assets/logo.webp"))
         if not pixmap.isNull():
             logo_label.setPixmap(pixmap.scaledToHeight(100, Qt.TransformationMode.SmoothTransformation))
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -117,7 +119,7 @@ class WelcomeWindow(QMainWindow):
         columns_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         columns_layout.setSpacing(20)
         
-        # Spalte 1: Dokumentation (GitHub als Text-Button ohne Icon)
+        # Spalte 1: Dokumentation
         columns_layout.addLayout(self.create_column(lang["col_doc"], [
             (lang["btn_web"], lambda: open_link("https://veloxos.org")),
             (lang["btn_wiki"], lambda: open_link("https://wiki.veloxos.org")),
@@ -140,7 +142,7 @@ class WelcomeWindow(QMainWindow):
         self.content_layout.addLayout(columns_layout)
         self.content_layout.addStretch()
 
-        # Footer (Socials OHNE github.svg)
+        # Footer (Socials)
         footer_socials = QHBoxLayout()
         socials = [
             ("discord.svg", "https://discord.gg/pgHSK8NGxG"),
@@ -151,10 +153,10 @@ class WelcomeWindow(QMainWindow):
         for icon, link in socials:
             s_btn = QPushButton()
             s_btn.setObjectName("socialButton")
-            s_btn.setIcon(QIcon(f"assets/{icon}"))
+            # ÄNDERUNG: Pfad für Social Icons angepasst
+            s_btn.setIcon(QIcon(get_resource_path(f"assets/{icon}")))
             s_btn.setIconSize(QSize(22, 22))
             s_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-            # Wichtig: l=link fixiert den Wert in der Schleife
             s_btn.clicked.connect(lambda checked, l=link: open_link(l))
             footer_socials.addWidget(s_btn)
         
@@ -182,8 +184,8 @@ class WelcomeWindow(QMainWindow):
             btn = QPushButton(text)
             btn.setObjectName("actionButton")
             if is_external:
-                # Hier wird nur das "external-link.svg" geladen, kein github.svg
-                btn.setIcon(QIcon("assets/external-link.svg"))
+                # ÄNDERUNG: Pfad für External-Link Icon angepasst
+                btn.setIcon(QIcon(get_resource_path("assets/external-link.svg")))
                 btn.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
                 btn.setIconSize(QSize(14, 14))
             btn.clicked.connect(func)

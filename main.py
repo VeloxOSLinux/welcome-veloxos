@@ -2,6 +2,7 @@ import sys
 import os
 from PyQt6.QtWidgets import QApplication
 from gui.gui import WelcomeWindow
+from functions.functions import get_resource_path
 
 def load_stylesheet(path):
     if os.path.exists(path):
@@ -12,11 +13,8 @@ def load_stylesheet(path):
 def main():
     app = QApplication(sys.argv)
     
-    # Pfad zur style.qss ermitteln
-    base_dir = os.path.dirname(__file__)
-    style_path = os.path.join(base_dir, "style", "style.qss")
+    style_path = get_resource_path(os.path.join("style", "style.qss"))
     
-    # Stylesheet laden und anwenden
     app.setStyleSheet(load_stylesheet(style_path))
     
     window = WelcomeWindow()
