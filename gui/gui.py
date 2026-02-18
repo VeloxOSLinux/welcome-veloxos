@@ -156,8 +156,9 @@ class WelcomeWindow(QMainWindow):
         
         # Installer nur im Live-System anzeigen
         if self.is_live_system():
-            btn_text = "➋ Install VeloxOS" if self.current_lang == "en" else "VeloxOS Installieren"
-            install_buttons.append((btn_text, lambda: run_command("sudo -E calamares"), "#00ff00"))
+            btn_text = "Install VeloxOS" if self.current_lang == "en" else "VeloxOS Installieren"
+            install_buttons.append(
+                (btn_text, lambda: run_command("gio launch /home/veloxos/Desktop/install-veloxos.desktop"), "#00ff00"))
         
         # Standard Apps (Pamac) immer anzeigen
         install_buttons.append((lang["btn_apps"], lambda: open_app("pamac-manager"), None))
