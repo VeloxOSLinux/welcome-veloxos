@@ -148,7 +148,7 @@ class WelcomeWindow(QMainWindow):
         # NVIDIA Logik
         if nvidia_state == 1:
             # Karte gefunden, aber Treiber fehlen (GELBER BUTTON wie in Yad)
-            btn_text = "➊ Install NVIDIA Drivers" if self.current_lang == "en" else "➊ NVIDIA Treiber installieren"
+            btn_text = "➊ Install NVIDIA Drivers" if self.current_lang == "en" else "NVIDIA Treiber installieren"
             install_buttons.append((btn_text, install_nvidia, "#ffcc00"))
         elif nvidia_state == 2:
             btn_text = "NVIDIA Drivers Active" if self.current_lang == "en" else "NVIDIA Treiber aktiv"
@@ -156,7 +156,7 @@ class WelcomeWindow(QMainWindow):
         
         # Installer nur im Live-System anzeigen
         if self.is_live_system():
-            btn_text = "➋ Install VeloxOS" if self.current_lang == "en" else "➋ VeloxOS Installieren"
+            btn_text = "➋ Install VeloxOS" if self.current_lang == "en" else "VeloxOS Installieren"
             install_buttons.append((btn_text, lambda: run_command("sudo -E calamares"), "#00ff00"))
         
         # Standard Apps (Pamac) immer anzeigen

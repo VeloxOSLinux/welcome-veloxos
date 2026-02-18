@@ -41,7 +41,14 @@ def open_app(command):
 
 
 def open_link(url):
-    webbrowser.open(url)
+    """ Öffnet Web-Links sicher über den System-Standard (XDG) """
+    # Wir nutzen xdg-open über unsere safe-Funktion,
+    # damit die AppImage-Libs den Browser nicht stören.
+    try:
+        run_safe_process(['xdg-open', url])
+    except Exception:
+        # Fallback, falls xdg-open wider Erwarten nicht da ist
+        webbrowser.open(url)
 
 
 def check_nvidia_status():
