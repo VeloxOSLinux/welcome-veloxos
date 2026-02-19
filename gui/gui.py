@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QPainter, QRadialGradient, QColor, QBrush, QPixmap
 import os
+import subprocess
 
 # Importiere die neuen Hardware-Funktionen
 from functions.functions import (run_command, open_app, open_link, 
@@ -158,7 +159,12 @@ class WelcomeWindow(QMainWindow):
         if self.is_live_system():
             btn_text = "Install VeloxOS" if self.current_lang == "en" else "VeloxOS Installieren"
             install_buttons.append(
-                (btn_text, lambda: run_command("dex /usr/share/applications/install-veloxos.desktop"), "#00ff00"))
+                (btn_text,
+                 lambda: subprocess.Popen(["gio", "launch", "/home/veloxos/Desktop/install-veloxos.desktop"])
+                 if subprocess.call(["sh", "-lc", "command -v gio >/dev/null"]) == 0
+                 else subprocess.Popen(["gtk-launch", "install-veloxos"]),
+                 "#00ff00")
+            )
         
         # Standard Apps (Pamac) immer anzeigen
         install_buttons.append((lang["btn_apps"], lambda: open_app("pamac-manager"), None))
