@@ -1,1 +1,17 @@
+# --- Rust spezifisch ---
 /target
+Cargo.lock
+
+# --- IDEs / Editoren ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Betriebssysteme ---
+.DS_Store
+Thumbs.db
+
+# --- Slint / Backup ---
+*.rs.bk
+node_modules/
