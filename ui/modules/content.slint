@@ -4,6 +4,7 @@ export component Content inherits VerticalLayout {
     in property <bool> nvidia-active;
     in property <bool> is-nvidia-needed;
     in property <string> active-lang;
+    in property <bool> show-install-button;
 
     callback open-link(string);
     callback open-app(string);
@@ -42,7 +43,6 @@ export component Content inherits VerticalLayout {
         VerticalLayout {
             width: 200px; spacing: 12px; alignment: start;
             Text { text: root.active-lang == "de" ? "EINSTELLUNGEN" : "SETTINGS"; color: #00aaff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; }
-            // HIER GEÄNDERT: Ruft dein eigenes Tool auf
             ActionButton { text: root.active-lang == "de" ? "System Updates" : "System Updates"; clicked => { root.open-app("velox-package-manager"); } }
             ActionButton { text: root.active-lang == "de" ? "Firewall (GUFW)" : "Firewall (GUFW)"; clicked => { root.open-app("gufw"); } }
             ActionButton { text: root.active-lang == "de" ? "Kernel Manager" : "Kernel Manager"; clicked => { root.open-app("manjaro-settings-manager -m msm_kernel"); } }
@@ -53,15 +53,27 @@ export component Content inherits VerticalLayout {
             width: 200px; spacing: 12px; alignment: start;
             Text { text: "INSTALLATION"; color: #00aaff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; }
 
+            // 1. Calamares (nur wenn Live-System)
+            if root.show-install-button : ActionButton {
+                text: root.active-lang == "de" ? "VeloxOS installieren" : "Install VeloxOS";
+                clicked => { root.start-installer(); }
+            }
+
+            // 2. App-Manager (Immer da)
+            ActionButton {
+                text: root.active-lang == "de" ? "Apps installieren" : "Install Apps";
+                clicked => { root.open-app("velox-package-manager"); }
+            }
+
+            // 3. NVIDIA Sektion
             if root.nvidia-active : Rectangle {
                 height: 48px; background: rgba(46, 204, 113, 0.15); border-width: 1px; border-color: #2ecc71; border-radius: 6px;
                 Text { text: root.active-lang == "de" ? "NVIDIA Aktiv" : "NVIDIA Active"; color: #2ecc71; font-weight: 800; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
             }
             if !root.nvidia-active && root.is-nvidia-needed : ActionButton {
-                text: root.active-lang == "de" ? "NVIDIA Treiber" : "Install NVIDIA"; clicked => { root.install-nvidia(); }
+                text: root.active-lang == "de" ? "NVIDIA Treiber" : "Install NVIDIA";
+                clicked => { root.install-nvidia(); }
             }
-
-            ActionButton { text: root.active-lang == "de" ? "Apps installieren" : "Install Apps"; clicked => { root.open-app("velox-package-manager"); } }
         }
     }
 
