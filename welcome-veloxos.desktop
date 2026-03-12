@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Welcome VeloxOS
+Comment=Welcome to VeloxOS
+Exec=welcome-veloxos
+Icon=welcome-veloxos
+Terminal=false
+Type=Application
+Categories=System;Settings;
