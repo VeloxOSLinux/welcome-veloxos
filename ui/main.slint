@@ -1,0 +1,42 @@
+import { Sidebar } from "modules/sidebar.slint";
+import { Content } from "modules/content.slint";
+
+export component AppWindow inherits Window {
+    title: "VeloxOS Welcome";
+    width: 1030px; height: 620px; background: #0b0e14;
+
+    in property <string> os-info;
+    in property <string> cpu-info;
+    in property <string> gpu-info;
+    in property <string> ram-info;
+    in property <string> kernel-info;
+    in property <bool> is-nvidia-needed;
+    in property <bool> nvidia-active;
+    in-out property <string> active-lang: "en";
+    in-out property <bool> autostart-enabled: true;
+
+    callback open-link(string);
+    callback open-app(string);
+    callback install-nvidia();
+    callback start-installer();
+    callback toggle-autostart(bool);
+    callback change-lang(string);
+
+    HorizontalLayout {
+        Sidebar {
+            os-info: root.os-info; cpu-info: root.cpu-info; gpu-info: root.gpu-info;
+            ram-info: root.ram-info; kernel-info: root.kernel-info;
+            active-lang: root.active-lang; autostart-enabled: root.autostart-enabled;
+            toggle-autostart(b) => { root.toggle-autostart(b); }
+            change-lang(l) => { root.change-lang(l); }
+        }
+        Content {
+            active-lang: root.active-lang; nvidia-active: root.nvidia-active;
+            is-nvidia-needed: root.is-nvidia-needed;
+            open-link(url) => { root.open-link(url); }
+            open-app(app) => { root.open-app(app); }
+            install-nvidia() => { root.install-nvidia(); }
+            start-installer() => { root.start-installer(); }
+        }
+    }
+}

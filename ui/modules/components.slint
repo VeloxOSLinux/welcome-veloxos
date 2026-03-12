@@ -1,0 +1,26 @@
+import { Button } from "std-widgets.slint";
+
+export component ActionButton inherits Rectangle {
+    in property <string> text;
+    callback clicked;
+    height: 48px;
+    background: ta.has-hover ? #1f242c : rgba(22, 27, 34, 0.8);
+    border-width: 1px;
+    border-color: ta.has-hover ? #00aaff : #30363d;
+    border-radius: 6px;
+    ta := TouchArea { clicked => { root.clicked(); } }
+    Text {
+        text: root.text;
+        color: ta.has-hover ? #00aaff : #ffffff;
+        font-size: 14px;
+        x: 18px;
+    }
+}
+
+export component InfoLabel inherits VerticalLayout {
+    in property <string> label;
+    in property <string> value;
+    spacing: 2px;
+    Text { text: label + ":"; color: #00aaff; font-weight: 800; font-size: 11px; }
+    Text { text: value; color: #cbd5e0; font-size: 11px; wrap: word-wrap; }
+}

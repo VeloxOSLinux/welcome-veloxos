@@ -1,0 +1,52 @@
+import { ComboBox, CheckBox } from "std-widgets.slint";
+import { InfoLabel } from "components.slint";
+
+export component Sidebar inherits Rectangle {
+    in property <string> os-info;
+    in property <string> cpu-info;
+    in property <string> gpu-info;
+    in property <string> ram-info;
+    in property <string> kernel-info;
+    in property <string> active-lang;
+    in property <bool> autostart-enabled;
+
+    callback toggle-autostart(bool);
+    callback change-lang(string);
+
+    width: 280px;
+    background: rgba(15, 20, 28, 0.7);
+
+    Rectangle { width: 1px; background: #1e242c; x: parent.width - 1px; }
+
+    VerticalLayout {
+        padding: 35px; spacing: 20px; alignment: start;
+        Image { source: @image-url("../../assets/VeloxOS-Welcome.png"); height: 70px; }
+        Text {
+            text: root.active-lang == "de" ? "Performance der nächsten Generation." : "Next Generation Performance.";
+            color: #8f939a; font-size: 13px; horizontal-alignment: center;
+        }
+        Rectangle {
+            background: rgba(255, 255, 255, 0.03); border-width: 1px;
+            border-color: rgba(0, 170, 255, 0.15); border-radius: 8px;
+            VerticalLayout {
+                padding: 15px; spacing: 10px;
+                InfoLabel { label: "OS"; value: root.os-info; }
+                InfoLabel { label: "CPU"; value: root.cpu-info; }
+                InfoLabel { label: "GPU"; value: root.gpu-info; }
+                InfoLabel { label: "RAM"; value: root.ram-info; }
+                InfoLabel { label: "KERN"; value: root.kernel-info; }
+            }
+        }
+        Rectangle { vertical-stretch: 1; }
+        ComboBox {
+            model: ["English", "Deutsch"];
+            current-value: root.active-lang == "de" ? "Deutsch" : "English";
+            selected(val) => { root.change-lang(val == "Deutsch" ? "de" : "en"); }
+        }
+        CheckBox {
+            text: root.active-lang == "de" ? "Beim Start ausführen" : "Launch at start";
+            checked: root.autostart-enabled;
+            toggled => { root.toggle-autostart(self.checked); }
+        }
+    }
+}

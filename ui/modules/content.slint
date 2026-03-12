@@ -1,0 +1,90 @@
+import { ActionButton } from "components.slint";
+
+export component Content inherits VerticalLayout {
+    in property <bool> nvidia-active;
+    in property <bool> is-nvidia-needed;
+    in property <string> active-lang;
+
+    callback open-link(string);
+    callback open-app(string);
+    callback install-nvidia();
+    callback start-installer();
+
+    padding: 50px; spacing: 35px;
+
+    // Hero Section
+    VerticalLayout {
+        spacing: 15px;
+        Text {
+            text: root.active-lang == "de" ? "Willkommen bei VeloxOS" : "Welcome to VeloxOS";
+            horizontal-alignment: center; font-size: 38px; font-weight: 300; color: #ffffff;
+        }
+        Text {
+            text: root.active-lang == "de" ? "Danke, dass du VeloxOS gewählt hast! Dieses Tool hilft dir dabei, dein System einzurichten, Treiber zu installieren und unsere Community zu entdecken." : "Thank you for choosing VeloxOS! This tool helps you to set up your system, install drivers and discover our community.";
+            color: #8f939a; horizontal-alignment: center; font-size: 14px; wrap: word-wrap;
+        }
+    }
+
+    // Button Grid
+    HorizontalLayout {
+        spacing: 30px; alignment: center;
+
+        // DOKUMENTATION
+        VerticalLayout {
+            width: 200px; spacing: 12px; alignment: start;
+            Text { text: root.active-lang == "de" ? "DOKUMENTATION" : "DOCUMENTATION"; color: #00aaff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; }
+            ActionButton { text: root.active-lang == "de" ? "Webseite" : "Website"; clicked => { root.open-link("https://veloxos.org"); } }
+            ActionButton { text: "Wiki"; clicked => { root.open-link("https://wiki.veloxos.org"); } }
+            ActionButton { text: "GitHub"; clicked => { root.open-link("https://github.com/VeloxOS"); } }
+        }
+
+        // EINSTELLUNGEN
+        VerticalLayout {
+            width: 200px; spacing: 12px; alignment: start;
+            Text { text: root.active-lang == "de" ? "EINSTELLUNGEN" : "SETTINGS"; color: #00aaff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; }
+            // HIER GEÄNDERT: Ruft dein eigenes Tool auf
+            ActionButton { text: root.active-lang == "de" ? "System Updates" : "System Updates"; clicked => { root.open-app("velox-package-manager"); } }
+            ActionButton { text: root.active-lang == "de" ? "Firewall (GUFW)" : "Firewall (GUFW)"; clicked => { root.open-app("gufw"); } }
+            ActionButton { text: root.active-lang == "de" ? "Kernel Manager" : "Kernel Manager"; clicked => { root.open-app("manjaro-settings-manager -m msm_kernel"); } }
+        }
+
+        // INSTALLATION
+        VerticalLayout {
+            width: 200px; spacing: 12px; alignment: start;
+            Text { text: "INSTALLATION"; color: #00aaff; font-weight: 800; font-size: 11px; letter-spacing: 1.5px; }
+
+            if root.nvidia-active : Rectangle {
+                height: 48px; background: rgba(46, 204, 113, 0.15); border-width: 1px; border-color: #2ecc71; border-radius: 6px;
+                Text { text: root.active-lang == "de" ? "NVIDIA Aktiv" : "NVIDIA Active"; color: #2ecc71; font-weight: 800; font-size: 13px; horizontal-alignment: center; vertical-alignment: center; }
+            }
+            if !root.nvidia-active && root.is-nvidia-needed : ActionButton {
+                text: root.active-lang == "de" ? "NVIDIA Treiber" : "Install NVIDIA"; clicked => { root.install-nvidia(); }
+            }
+
+            ActionButton { text: root.active-lang == "de" ? "Apps installieren" : "Install Apps"; clicked => { root.open-app("velox-package-manager"); } }
+        }
+    }
+
+    Rectangle { vertical-stretch: 1; }
+
+    // Footer Socials
+    HorizontalLayout {
+        spacing: 15px; alignment: start;
+        for icon-data in [
+            { src: @image-url("../../assets/discord.svg"), link: "https://discord.gg/pgHSK8NGxG", use-color: true },
+            { src: @image-url("../../assets/mastodon.svg"), link: "https://mastodon.social/@veloxos", use-color: false },
+            { src: @image-url("../../assets/x.svg"), link: "https://x.com/veloxoslinux", use-color: true }
+        ] : Rectangle {
+            width: 36px; height: 36px; border-radius: 18px;
+            background: sta.has-hover ? rgba(0, 170, 255, 0.15) : transparent;
+            animate background { duration: 150ms; }
+            sta := TouchArea { clicked => { root.open-link(icon-data.link); } }
+            Image {
+                source: icon-data.src;
+                width: 20px; height: 20px;
+                colorize: icon-data.use-color ? #00aaff : transparent;
+                opacity: sta.has-hover ? 1.0 : 0.7;
+            }
+        }
+    }
+}
